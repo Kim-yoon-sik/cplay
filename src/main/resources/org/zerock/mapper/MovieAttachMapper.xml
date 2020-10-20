@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.MovieAttachMapper">
+	
+	<!-- 관리자 사진 추가 첨부파일로 구성-->
+	<insert id="insert">
+		insert into tbl_movieImg_attach(uuid, uploadPath, fileName, fileType, mov_title)
+		values(#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{mov_title});
+	</insert>
+	
+	<!-- 첨부파일 삭제 -->
+	<delete id="delete">
+		delete from tbl_movieImg_attach where uuid = #{uuid}
+	</delete>
+	
+	<!--  -->
+	<select id="findByMovTitle" resultType="org.zerock.domain.MovieAttachVO">
+		select * from tbl_movieImg_attach where mov_title = #{mov_title} 
+	</select>
+</mapper>

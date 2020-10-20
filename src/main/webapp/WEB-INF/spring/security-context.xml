@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!-- <bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean> --> <!-- 임의로 핸들러 막아놓음 -->
+<bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>
+<!-- 비밀번호 암호화를 위한 클래스 빈 추가 -->
+<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+<bean id="customUserDetailsService" class="org.zerock.security.CustomUserDetailService"></bean>
+		
+		<security:http>
+			<security:intercept-url pattern="/cplay/all" access="permitAll"/>
+			<security:intercept-url pattern="/cplay/member" access="hasRole('ROLE_MEMBER')"/>
+			<security:intercept-url pattern="/cplay/admin" access="hasRole('ROLE_ADMIN')"/>
+			<security:intercept-url pattern="/auth.do" access="permitAll"/>
+
+			<!-- <security:access-denied-handler ref="customAccessDenied"/> --> <!-- 임의로 핸들러 막아놓음 -->
+			
+			<!-- 에러시 보여주는 에러창 -->
+			<!-- <security:access-denied-handler error-page="/accessError"/> -->
+			<!-- <security:form-login/> -->
+			
+			<!-- 권한이 필요한 페이지에서 로그인 화면을 보여줌 -->
+			<security:form-login login-page="/login" authentication-success-handler-ref="customLoginSuccess"/>
+			
+			<!-- 로그인 유지 설정 -->
+			<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
+			
+			<!-- 로그아웃 처리 -->
+			<security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me, JSESSION_ID" />
+		</security:http>
+		
+		<security:authentication-manager>
+			<security:authentication-provider user-service-ref="customUserDetailsService">
+			
+			<!-- 비밀번호 암호화  -->
+				<security:password-encoder ref="bcryptPasswordEncoder"/> 
+			</security:authentication-provider>
+		</security:authentication-manager>
+</beans>
+

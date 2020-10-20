@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.MemberMapper">
+
+<!-- ResultMap -->
+<resultMap type="org.zerock.domain.MemberDAO" id="cplayMemberMap">
+<id property="mem_id" column="mem_id"/>
+<result property="mem_id" column="mem_id"/>
+<result property="mem_pw" column="mem_pw"/>
+<result property="mem_name" column="mem_name"/>
+<result property="mem_birth" column="mem_birth"/>
+<result property="mem_email" column="mem_email"/>
+<result property="mem_phone" column="mem_phone"/>
+<result property="mem_gender" column="mem_gender"/>
+<result property="mem_oaddress" column="mem_oaddress"/>
+<result property="mem_address" column="mem_address"/>
+<result property="mem_detailaddress" column="mem_detailaddress"/>
+<collection property="authList" resultMap="cplayAuthMap"></collection>
+</resultMap>
+
+<resultMap type="org.zerock.domain.AuthVO" id="cplayAuthMap">
+	<result property="mem_id" column="mem_id"/>
+	<result property="auth" column="auth"/>
+</resultMap>
+
+<!-- 회원정보 불러오기 -->
+<select id="read" resultMap="cplayMemberMap">
+SELECT mem.mem_id, mem_pw, mem_name, mem_birth, mem_email, mem_phone, mem_gender, mem_oaddress, mem_address, mem_detailaddress, auth 
+FROM tbl_cplay_member mem LEFT OUTER JOIN tbl_cplay_member_auth auth on mem.mem_id = auth.mem_id
+WHERE mem.mem_id = #{mem_id}
+</select>
+
+<!-- 회원정보 저장(회원가입):: 가입 자동 일반회원 권한 부여 -->
+<insert id="memberJoin">
+insert all 
+into tbl_cplay_member (mem_id, mem_pw, mem_name, mem_birth, mem_email, mem_phone, mem_gender, mem_oaddress, mem_address, mem_detailaddress) 
+values(#{mem_id}, #{mem_pw}, #{mem_name}, #{mem_birth}, #{mem_email}, #{mem_phone}, #{mem_gender}, #{mem_oaddress}, #{mem_address}, #{mem_detailaddress})
+into tbl_cplay_member_auth (mem_id)
+values (#{mem_id})
+select *
+from dual
+</insert>
+
+<!-- 아이디 중복 검사 -->
+<select id="checkOverId" parameterType="String" resultType="int">
+	select count(*) from tbl_cplay_member where mem_id = #{mem_id}
+</select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.MovieMapper">
+<!-- 관리자 -->
+<!-- 새로운 영화정보 추가 -->
+<!-- <insert id="insertMovie">
+	insert 
+	into tbl_movie_info(mov_title, mov_thumbnail, mov_genre, mov_director, mov_actor, mov_nation, mov_opday, mov_running_time, mov_point, mov_platform, mov_detailImg, mov_clip)
+	values(#{mov_title}, #{mov_thumbnail}, #{mov_genre}, #{mov_director}, #{mov_actor}, #{mov_nation}, #{mov_opday}, #{mov_running_time}, #{mov_point}, #{mov_platform}, #{mov_detailImg}, #{mov_clip}) 
+</insert> -->
+
+<!-- 첨부이미지 파일수정  11개 항목-->
+<insert id="insertMovie">
+	insert 
+	into tbl_movie_info(mov_title, mov_thumbnail, mov_genre, mov_director, mov_actor, mov_nation, mov_opday, mov_running_time, mov_point, mov_platform, mov_detailImg, mov_clip)
+	values(#{mov_title}, #{mov_thumbnail}, #{mov_genre}, #{mov_director}, #{mov_actor}, #{mov_nation}, #{mov_opday}, #{mov_running_time}, #{mov_point}, #{mov_platform}, #{mov_detailImg}, #{mov_clip}) 
+</insert>
+
+<update id="updateMovie">
+	update tbl_movie_info
+	set
+	mov_thumbnail= #{mov_thumbnail},
+	mov_genre = #{mov_genre},
+	mov_director = #{mov_director},
+	mov_actor = #{mov_actor},
+	mov_nation = #{mov_nation},
+	mov_opday = #{mov_opday},
+	mov_running_time = #{mov_running_time},
+	mov_point = #{mov_point},
+	mov_platform = #{mov_platform},
+	mov_detailImg = #{mov_detailImg},
+	mov_clip = #{mov_clip}
+	where mov_title = #{mov_title}
+</update>
+
+<delete id="deleteMovie">
+	delete from tbl_movie_info where mov_title = #{mov_title}
+</delete>
+
+</mapper>

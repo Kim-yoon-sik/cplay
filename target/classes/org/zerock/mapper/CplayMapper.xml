@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.CplayMapper">
+
+<select id="getList" resultType="org.zerock.domain.MovieDAO">
+<![CDATA[
+select * from tbl_movie_info
+]]>
+</select>
+
+<insert id="insert">
+ insert into tbl_movie_info(mov_title, mov_thumbnail, mov_genre, mov_director, mov_actor, mov_nation, mov_opday, mov_running_time, mov_point, mov_platform, mov_detailImg, mov_clip)
+ values(#{mov_title}, #{mov_thumbnail}, #{mov_genre}, #{mov_director},#{mov_actor},#{mov_nation},#{mov_opday},#{mov_running_time},#{mov_point},#{mov_platform},#{mov_detailImg},#{mov_clip})
+</insert>
+
+
+
+<select id="read" resultType="org.zerock.domain.MovieDAO">
+ select * from tbl_movie_info where mov_title = #{mov_title}
+</select>
+
+<delete id="delete" >
+ delete from tbl_movie_info where mov_title = #{mov_title}
+ </delete>
+ 
+ <update id="update">
+  update tbl_movie_info
+  set
+  mov_thumbnail= #{mov_thumbnail},
+  mov_genre = #{mov_genre},
+  mov_director = #{mov_director},
+  mov_actor = #{mov_actor},
+  mov_nation = #{mov_nation},
+  mov_opday = #{mov_opday},
+  mov_running_time = #{mov_running_time},
+  mov_point = #{mov_point},
+  mov_platform = #{mov_platform},
+  mov_detailImg = #{mov_detailImg},
+  mov_clip = #{mov_clip}
+  where mov_title = #{mov_title}
+ </update>
+ 
+ <select id="getListWithPaging" resultType="org.zerock.domain.MovieDAO">
+ <![CDATA[
+ select mov_title, mov_thumbnail, mov_genre, mov_director, mov_actor, mov_nation, mov_opday, mov_running_time, mov_point, mov_platform, mov_detailImg, mov_clip
+ from
+ ( 
+ select /*+INDEX_DESC(tbl_movie_info pk_board1) */
+ rownum rn, mov_title, mov_thumbnail, mov_genre, mov_director, mov_actor, mov_nation, mov_opday, mov_running_time, mov_point, mov_platform, mov_detailImg, mov_clip
+ from tbl_movie_info
+ where
+ ]]>
+ <trim prefix="(" suffix=") AND" prefixOverrides="OR">
+ <foreach item='type' collection="typeArr">
+ <trim prefix="OR">
+ <choose>
+ <when test="type == 'T'.toString()">
+ mov_title like '%' ||#{keyword}||'%'
+ </when>
+ <when test="type == 'G'.toString()">
+ mov_genre like '%' || #{keyword}||'%'
+ </when>
+ <when test="type == 'N'.toString()">
+ mov_nation like '%' ||#{keyword}||'%'
+ </when>
+ </choose>
+ </trim>
+ </foreach>
+ </trim>
+ <![CDATA[
+ rownum <= #{pageNum} * #{amount})
+ 
+ where rn > (#{pageNum} - 1) * #{amount}
+ ]]>
+
+</select>
+ 
+ <select id="getTotalCount" resultType="int">
+ select count(*) from tbl_movie_info where rownum > 0
+ </select>
+</mapper>
